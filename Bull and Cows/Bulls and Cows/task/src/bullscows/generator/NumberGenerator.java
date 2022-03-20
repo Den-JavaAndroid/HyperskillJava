@@ -6,8 +6,10 @@ import java.util.Random;
 
 public class NumberGenerator {
 
-    public static String generateRandomNumber(int length, int numberOfPossibleSymbols) throws GeneratorException {
+    public static String generateRandomNumber(String lengthStr, String numberOfPossibleSymbolsStr) throws GeneratorException {
         List<Integer> allNumbersList = getAllNumbersList();
+        int length = Integer.parseInt(lengthStr);
+        int numberOfPossibleSymbols = Integer.parseInt(numberOfPossibleSymbolsStr);
         if (length > 10)
             throw new GeneratorException(String.format("Error: can't generate a secret number with a length of %s because there aren't enough unique digits.", length));
         int numberLetters = numberOfPossibleSymbols > 10 ? numberOfPossibleSymbols - 10 : 0;

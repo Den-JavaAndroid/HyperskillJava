@@ -3,6 +3,7 @@ package bullscows;
 import bullscows.generator.GeneratorException;
 import bullscows.generator.NumberGenerator;
 import bullscows.validator.CodeGrader;
+import bullscows.validator.UserInputValidator;
 
 import java.util.Map;
 import java.util.Objects;
@@ -14,11 +15,17 @@ public class Main {
         String guess = "";
         Scanner scanner = new Scanner(System.in);
         System.out.println("Input the length of the secret code:");
-        int lenghtOfSecretCode = scanner.nextInt();
+        String lenghtOfSecretCode = scanner.next();
+        if (!UserInputValidator.validateInputOfLengthCode(lenghtOfSecretCode)) {
+            return;
+        }
         System.out.println("Input the number of possible symbols in the code:");
-        int numberOfPossibleSymbols = scanner.nextInt();
+        String numberOfPossibleSymbols = scanner.next();
+        if (!UserInputValidator.validateNumberOfPossibleSymbols(numberOfPossibleSymbols, lenghtOfSecretCode)) {
+            return;
+        }
         try {
-            guess = NumberGenerator.generateRandomNumber(lenghtOfSecretCode,numberOfPossibleSymbols);
+            guess = NumberGenerator.generateRandomNumber(lenghtOfSecretCode, numberOfPossibleSymbols);
         } catch (GeneratorException e) {
             System.out.println(e.getMessage());
         }
