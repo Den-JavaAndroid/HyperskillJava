@@ -2,43 +2,49 @@ package bullscows.generator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class NumberGenerator {
-    public static int generateRandomNumber(int length) throws GeneratorException {
+
+    public static String generateRandomNumber(int length, int numberOfPossibleSymbols) throws GeneratorException {
         List<Integer> allNumbersList = getAllNumbersList();
         if (length > 10)
             throw new GeneratorException(String.format("Error: can't generate a secret number with a length of %s because there aren't enough unique digits.", length));
-        boolean isPseudoRandomNumber = false;
-        StringBuilder preudoRandomNumberBuilder = new StringBuilder();
-        while (!isPseudoRandomNumber) {
-            StringBuilder nanoTime = new StringBuilder(String.valueOf(System.nanoTime())).reverse();
-            boolean isAllFrontZeroDeleted = false;
-            for (int i = 0; i < nanoTime.length(); i++) {
-                if (!isAllFrontZeroDeleted && nanoTime.charAt(i) == '0') {
-                    nanoTime.deleteCharAt(i);
-                    i--;
-                } else {
-                    isAllFrontZeroDeleted = true;
-                    break;
+        int numberLetters = numberOfPossibleSymbols > 10 ? numberOfPossibleSymbols - 10 : 0;
+        ArrayList<Character> englishSymbols = getEnglishSymbols(numberLetters);
+        ArrayList<Character> usedEnglishSymbols = new ArrayList<>(englishSymbols);
+
+        Random random = new Random();
+        StringBuilder randomNumberBuilder = new StringBuilder();
+        var isRandomCoderBuilded = false;
+        while (!isRandomCoderBuilded) {
+            int randomInt = random.nextInt(10);
+            if (numberLetters > 0) {
+                int randomSymbolNumber = random.nextInt(numberLetters-1);
+                Character randomCharacter = usedEnglishSymbols.get(randomSymbolNumber);
+                if (englishSymbols.contains(randomCharacter)) {
+                    randomNumberBuilder.append(randomCharacter);
+                    englishSymbols.remove(randomCharacter);
+                    if (randomNumberBuilder.length() == length) {
+                        isRandomCoderBuilded = true;
+                        continue;
+                    }
                 }
             }
-            if (nanoTime.length() < 10) continue;
-
-            for (int i = 0; i < nanoTime.length(); i++) {
-                if (preudoRandomNumberBuilder.length() == length) {
-                    isPseudoRandomNumber = true;
-                    break;
-                }
-                int currentInt = Character.getNumericValue(nanoTime.charAt(i));
-                if (allNumbersList.contains(currentInt)) {
-                    preudoRandomNumberBuilder.append(currentInt);
-                    allNumbersList.remove(new Integer(currentInt));
-                }
+            if (allNumbersList.contains(randomInt)) {
+                randomNumberBuilder.append(randomInt);
+                allNumbersList.remove(new Integer(randomInt));
+            }
+            if (randomNumberBuilder.length() == length) {
+                isRandomCoderBuilded = true;
             }
         }
-        int randomNumber = Integer.parseInt(preudoRandomNumberBuilder.toString());
-        System.out.println(String.format("The random secret number is %s.", randomNumber));
-        return randomNumber;
+        String secreteCode = randomNumberBuilder.toString();
+        if (numberLetters > 0)
+            System.out.printf("The secret is prepared: %s (0-9, a-%s).\n", secreteCode.replaceAll("[a-z0-9]", "*"), usedEnglishSymbols.get(numberLetters-1));
+        else
+            System.out.printf("The secret is prepared: %s (0-9).\n", secreteCode.replaceAll("[0-9]", "*"));
+        return secreteCode;
     }
 
     private static List<Integer> getAllNumbersList() {
@@ -47,6 +53,15 @@ public class NumberGenerator {
             allNumbers.add(i);
         }
         return allNumbers;
+    }
+
+    private static ArrayList<Character> getEnglishSymbols(int countSymbols) {
+        String allEnglishSymbols = "A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z".replaceAll(", ", "").toLowerCase();
+        var symbols = new ArrayList<Character>();
+        for (int i = 0; i < countSymbols; i++) {
+            symbols.add(allEnglishSymbols.charAt(i));
+        }
+        return symbols;
     }
 }
 

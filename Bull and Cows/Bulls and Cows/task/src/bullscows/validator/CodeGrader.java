@@ -9,18 +9,21 @@ import java.util.Map;
 import static bullscows.GuessTypes.*;
 
 public class CodeGrader {
-    private final String GUESS = "1234";
+    private String guess;
     private Map<GuessTypes, Integer> gradeResult;
 
-    public Map<GuessTypes, Integer> analyzeNumber(int number) {
+    public CodeGrader(String guess) {
+        this.guess = String.valueOf(guess);
+    }
+
+    public Map<GuessTypes, Integer> analyzeNumber(String number) {
         gradeResult = new HashMap<>();
         gradeResult.put(BULLS, 0);
         gradeResult.put(COWS, 0);
-        var convertedNumber = String.valueOf(number);
-        for (int i = 0; i < GUESS.length(); i++) {
-            if (convertedNumber.charAt(i) == GUESS.charAt(i)) {
+        for (int i = 0; i < guess.length(); i++) {
+            if (number.charAt(i) == guess.charAt(i)) {
                 gradeResult.put(BULLS, gradeResult.get(BULLS) + 1);
-            } else if (GUESS.contains(convertedNumber.charAt(i) + "")) {
+            } else if (guess.contains(number.charAt(i) + "")) {
                 gradeResult.put(COWS, gradeResult.get(COWS) + 1);
             }
         }
@@ -29,13 +32,17 @@ public class CodeGrader {
 
     public String getGradeResultsMessage() {
         String message = "";
-        if (gradeResult.get(BULLS) > 0 && gradeResult.get(COWS) >= 0) {
-            message = String.format("Grade: %s bull(s) and %s cow(s). The secret code is %s.", gradeResult.get(BULLS), gradeResult.get(COWS), GUESS);
+        if (guess.length() == gradeResult.get(BULLS)) {
+            return String.format("Grade: %s bulls\n" +
+                    "Congratulations! You guessed the secret code.", guess.length());
+        }
+        if (gradeResult.get(BULLS) > 0 && gradeResult.get(COWS) > 0) {
+            message = String.format("Grade: %s bull(s) and %s cow(s).", gradeResult.get(BULLS), gradeResult.get(COWS));
         } else {
             if (gradeResult.get(BULLS) == 0 && gradeResult.get(COWS) > 0) {
-                message = String.format("Grade: %s cow(s). The secret code is %s.", gradeResult.get(COWS), GUESS);
+                message = String.format("Grade: %s cow(s).", gradeResult.get(COWS));
             } else {
-                message = String.format("Grade: None. The secret code is %s.", GUESS);
+                message = "Grade: None";
             }
         }
         return message;
