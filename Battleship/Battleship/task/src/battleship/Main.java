@@ -8,11 +8,10 @@ public class Main {
 
         BattleField battleField = new BattleField();
         battleField.printField();
-        battleField.placeAirCraftCarrier();
-        battleField.placeBattleship();
-        battleField.placeSubmarine();
-        battleField.placeCruiser();
-        battleField.placeDestroyer();
-
+        battleField.placeShip(ShipType.AIRCRAFT_CARRIER);
+        battleField.placeShip(ShipType.BATTLESHIP);
+        battleField.placeShip(ShipType.SUBMARINE);
+        battleField.placeShip(ShipType.CRUISER);
+        battleField.placeShip(ShipType.DESTROYER);
     }
 }

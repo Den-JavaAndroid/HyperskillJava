@@ -1,5 +1,7 @@
 package battleship.view;
 
+import battleship.ShipType;
+
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -17,20 +19,20 @@ public class BattleField {
     }
 
 
-    public HashMap<String, Character> placeAirCraftCarrier() {
-        System.out.println("Enter the coordinates of the Aircraft Carrier (5 cells):");
+    public HashMap<String, Character> placeShip(ShipType shipType) {
+        System.out.println(String.format("Enter the coordinates of the %s (%s cells):", shipType.getName(), shipType.getLength()));
         String coordinateStart;
         String coordinateEnd;
         boolean isCorrectLength = false;
         while (!isCorrectLength) {
             coordinateStart = scanner.next();
             coordinateEnd = scanner.next();
-            if (getSheepLength(coordinateStart, coordinateEnd) == 5) {
+            if (getSheepLength(coordinateStart, coordinateEnd) == shipType.getLength()) {
                 if (!checkCoordinates(coordinateStart, coordinateEnd)) continue;
                 placeSheep(coordinateStart, coordinateEnd);
                 isCorrectLength = true;
             } else {
-                System.out.println("Error! Wrong length of the Aircraft Carrier! Try again:");
+                System.out.println(String.format("Error! Wrong length of the %s! Try again:", shipType.getName()));
             }
         }
         printField();
@@ -130,6 +132,7 @@ public class BattleField {
         }
         return true;
     }
+
 
     private int getSheepLength(String startCoordinate, String endCoordinate) {
         char symbolStart = startCoordinate.split("\\d")[0].charAt(0);
