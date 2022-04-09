@@ -2,6 +2,7 @@ package battleship.view;
 
 import battleship.ShipType;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -203,6 +204,32 @@ public class BattleField {
                 stringBuilder.append(field.get(rowSymbols[i - 1] + String.valueOf(j))).append(" ");
             }
             System.out.println(stringBuilder);
+        }
+    }
+
+    public void takeShot() {
+        System.out.println("Take a shot!");
+        boolean isCorrectCoordinate = false;
+        while (!isCorrectCoordinate) {
+            String coordinate = scanner.next();
+            char symbol = coordinate.split("\\d")[0].charAt(0);
+            int number = Integer.parseInt(coordinate.split("\\D")[1]);
+            if (!Arrays.toString(rowSymbols).contains(symbol + "") || number > 10 || number < 1) {
+                System.out.println("Error! You entered the wrong coordinates! Try again:");
+                continue;
+            }
+            if (field.get(coordinate).equals(YOUR_SHIP_CELL)) {
+                field.put(coordinate, HIT_SHIP_CELL);
+                printField();
+                System.out.println("You hit a ship!");
+            } else {
+                field.put(coordinate, MISS_SHOT_CELL);
+                printField();
+                System.out.println("You missed!");
+            }
+
+            isCorrectCoordinate = true;
+
         }
     }
 }
